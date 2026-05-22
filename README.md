@@ -33,6 +33,17 @@ This platform was designed to:
 
 - [Installation Guide](docs/installation.md)
 
+| Section | Description |
+|---|---|
+| [Installation](docs/installation.md) | Deploy the workshop container |
+| [Architecture](docs/installation.md#shared-directory-structure) | Infrastructure overview |
+| [Users & SSH](docs/users.md) | Multi-user access |
+| [Conda](docs/conda.md) | Shared Conda environments |
+| [Nextflow](docs/nextflow.md) | Workflow execution |
+| [Backup & Restore](docs/backup_restore.md) | Export and restore containers |
+| [Troubleshooting](docs/troubleshooting.md) | Common issues |
+| [License](LICENSE) | Project license |
+
 # Why Use System Containers Instead of Traditional Workstations?
 
 Traditional workshop deployment usually requires:
