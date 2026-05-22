@@ -35,14 +35,13 @@ This platform was designed to:
 
 | Section | Description |
 |---|---|
-| [Installation](docs/installation.md) | Deploy the workshop container |
+| [Installation](docs/installation.md#install-LXD) | Deploy the workshop container |
+| [Network](docs/installation.md#network-setting) | Network Setting |
 | [Architecture](docs/installation.md#shared-directory-structure) | Infrastructure overview |
-| [Users & SSH](docs/users.md) | Multi-user access |
-| [Conda](docs/conda.md) | Shared Conda environments |
-| [Nextflow](docs/nextflow.md) | Workflow execution |
-| [Backup & Restore](docs/backup_restore.md) | Export and restore containers |
-| [Troubleshooting](docs/troubleshooting.md) | Common issues |
-| [License](LICENSE) | Project license |
+| [Users & SSH](docs/installation.md#check-users) | Multi-user access |
+| [Conda](docs/installation.md#conda-environment-usage) | Conda Environment Usage |
+| [Nextflow](docs/installation.md#running-nextflow-pipelines) | Workflow execution |
+| [Backup & Restore](docs/installtion.md#backup-and-portability) | Export and restore containers |
 
 # Why Use System Containers Instead of Traditional Workstations?
 
