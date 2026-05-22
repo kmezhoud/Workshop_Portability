@@ -1,6 +1,7 @@
 ---
 title: "Installation Guide"
-output: html_notebook
+date: "`r Sys.Date()`"
+output: github_document
 ---
 
 ## Install LXD
