@@ -31,8 +31,6 @@ This platform was designed to:
 
 # Documentation Links
 
-- [Installation Guide](docs/installation.md)
-
 | Section | Description |
 |---|---|
 | [Installation](docs/installation.md#install-LXD) | Deploy the workshop container |
@@ -41,7 +39,7 @@ This platform was designed to:
 | [Users & SSH](docs/installation.md#check-users) | Multi-user access |
 | [Conda](docs/installation.md#conda-environment-usage) | Conda Environment Usage |
 | [Nextflow](docs/installation.md#running-nextflow-pipelines) | Workflow execution |
-| [Backup & Restore](docs/installtion.md#backup-and-portability) | Export and restore containers |
+| [Backup & Restore](docs/installation.md#backup-and-portability) | Export and restore containers |
 
 # Why Use System Containers Instead of Traditional Workstations?
 
