@@ -31,7 +31,7 @@ This platform was designed to:
 
 # Documentation Links
 
-- [Installation Guide](docs/installation.nb.html)
+- [Installation Guide](docs/installation.md)
 
 # Why Use System Containers Instead of Traditional Workstations?
 

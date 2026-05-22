@@ -1,6 +1,5 @@
 Installation Guide
 ================
-2026-05-22
 
 ## Install LXD
 
