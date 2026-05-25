@@ -1,0 +1,227 @@
+---
+config:
+  boot.autostart: "true"
+
+  user.user-data: |
+    #cloud-config
+
+    package_update: true
+    package_upgrade: true
+
+    groups:
+      - workshop_grp
+
+    packages:
+      - openssh-server
+      - curl
+      - wget
+      - acl # Required for your setfacl operations
+      - ca-certificates # CRITICAL: Forces Ubuntu to verify SSL paths properly
+      - openjdk-21-jre
+      - ssh
+      - libtinfo6
+      - libncursesw6
+      - ncurses-term
+
+    users:
+      - default
+
+      - name: user1
+        gecos: User 1
+        shell: /bin/bash
+        lock_passwd: false
+        sudo: ALL=(ALL) NOPASSWD:ALL
+        groups: [sudo, workshop_grp]
+
+      - name: user2
+        gecos: User 2
+        shell: /bin/bash
+        lock_passwd: false
+        sudo: ALL=(ALL) NOPASSWD:ALL
+        groups: [sudo, workshop_grp]
+
+      - name: user3
+        gecos: User 3
+        shell: /bin/bash
+        lock_passwd: false
+        sudo: ALL=(ALL) NOPASSWD:ALL
+        groups: [sudo, workshop_grp]
+
+      - name: user4
+        gecos: User 4
+        shell: /bin/bash
+        lock_passwd: false
+        sudo: ALL=(ALL) NOPASSWD:ALL
+        groups: [sudo, workshop_grp]
+
+      - name: user5
+        gecos: User 5
+        shell: /bin/bash
+        lock_passwd: false
+        sudo: ALL=(ALL) NOPASSWD:ALL
+        groups: [sudo, workshop_grp]
+
+      - name: user6
+        gecos: User 6
+        shell: /bin/bash
+        lock_passwd: false
+        sudo: ALL=(ALL) NOPASSWD:ALL
+        groups: [sudo, workshop_grp]
+
+      - name: user7
+        gecos: User 7
+        shell: /bin/bash
+        lock_passwd: false
+        sudo: ALL=(ALL) NOPASSWD:ALL
+        groups: [sudo, workshop_grp]
+
+      - name: user8
+        gecos: User 8
+        shell: /bin/bash
+        lock_passwd: false
+        sudo: ALL=(ALL) NOPASSWD:ALL
+        groups: [sudo, workshop_grp]
+
+      - name: user9
+        gecos: User 9
+        shell: /bin/bash
+        lock_passwd: false
+        sudo: ALL=(ALL) NOPASSWD:ALL
+        groups: [sudo, workshop_grp]
+
+      - name: user10
+        gecos: User 10
+        shell: /bin/bash
+        lock_passwd: false
+        sudo: ALL=(ALL) NOPASSWD:ALL
+        groups: [sudo, workshop_grp]
+
+    write_files:
+      - path: /etc/profile.d/workshop.sh
+        permissions: '0755'
+        content: |
+          export PATH=/usr/local/bin:/shared/tools:$PATH
+
+          if [ -d /shared/tools/miniforge3/bin ]; then
+              export PATH=/shared/tools/miniforge3/bin:$PATH
+          fi
+
+          if [ -f /shared/tools/miniforge3/etc/profile.d/conda.sh ]; then
+              source /shared/tools/miniforge3/etc/profile.d/conda.sh
+          fi
+
+    runcmd:
+
+      # SSH configuration
+      - echo "PasswordAuthentication yes" > /etc/ssh/sshd_config.d/60-cloudimg-settings.conf
+      # - sed -i 's/^#PasswordAuthentication yes/PasswordAuthentication yes/' /etc/ssh/sshd_config
+      # - sed -i 's/^PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
+      - systemctl enable ssh
+      - systemctl restart ssh
+
+      # Set passwords
+      - |
+        for i in $(seq 1 10); do
+          echo "user${i}:user${i}" | chpasswd
+        done
+
+      # Shared directories
+      - mkdir -p /shared/fastq_files
+      - mkdir -p /shared/tools
+      - mkdir -p /shared/apptainer_images
+      - mkdir -p /shared/results
+      - mkdir -p /shared/conda-pkgs
+      - mkdir -p /shared/conda-envs
+
+      # Ownership
+      - chown -R root:workshop_grp /shared
+
+      # Permissions
+      - chmod 2755 /shared/fastq_files
+      - chmod 2755 /shared/tools
+      - chmod 2755 /shared/apptainer_images
+      - chmod 2775 /shared/results
+      - chmod 2775 /shared/conda-pkgs
+      - chmod 2775 /shared/conda-envs
+
+      # ACLs
+      - setfacl -m g:workshop_grp:rwx /shared/results
+      - setfacl -d -m g:workshop_grp:rwx /shared/results
+
+      - setfacl -m g:workshop_grp:rwx /shared/conda-pkgs
+      - setfacl -d -m g:workshop_grp:rwx /shared/conda-pkgs
+
+      - setfacl -m g:workshop_grp:rwx /shared/conda-envs
+      - setfacl -d -m g:workshop_grp:rwx /shared/conda-envs
+
+      # Install Miniforge
+      - wget -q https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh -O /tmp/miniforge.sh
+      - bash /tmp/miniforge.sh -b -p /shared/tools/miniforge3
+      - rm -f /tmp/miniforge.sh
+
+      # Conda permissions
+      - chown -R root:workshop_grp /shared/tools/miniforge3
+      - chmod -R 2775 /shared/tools/miniforge3
+
+      # Conda config
+      - /shared/tools/miniforge3/bin/conda config --system --prepend channels conda-forge
+      - /shared/tools/miniforge3/bin/conda config --system --add channels bioconda
+      - /shared/tools/miniforge3/bin/conda config --system --add pkgs_dirs /shared/conda-pkgs
+
+      # Install bioinformatics tools
+      - /shared/tools/miniforge3/bin/conda install -y fastp
+      - /shared/tools/miniforge3/bin/conda install -y -c bioconda iqtree
+      - /shared/tools/miniforge3/bin/conda install -y -c bioconda nextflow
+
+      # Nextflow standalone
+      - curl -s https://get.nextflow.io -o /shared/tools/nextflow
+      - chmod +x /shared/tools/nextflow
+
+      # Final permissions
+      - chmod +x /etc/profile.d/workshop.sh
+      
+      # reload workshop.sh
+      - echo "source /etc/profile.d/workshop.sh" >> /etc/bash.bashrc
+
+      # Validation logs
+      - echo "=== USERS ==="
+      - getent passwd | grep user
+
+      - echo "=== SHARED ==="
+      - ls -lah /shared
+
+      - echo "=== TOOLS ==="
+      - ls -lah /shared/tools
+
+devices:
+  eth0:
+    type: nic
+    name: eth0
+    network: lxdbr0
+    ipv4.address: 10.5.97.20
+
+  ssh-forward:
+    type: proxy
+    listen: tcp:192.168.4.64:2222
+    connect: tcp:10.5.97.20:22
+    nat: "true"
+
+
+## check indent 
+#yamllint vm.yaml
+
+## check Host LAN IP
+# ip route get 1.1.1.1 | awk '{print $7}'
+## replace listen: tcp:<YOUR_LAN_IP>:2222
+
+## Check the Internal IP
+#  sudo lxc network show lxdbr0 | grep ipv4.address
+
+## how to run
+# sudo lxc launch ubuntu:24.04 workshop --vm < vm.yaml
+# sudo lxc exec workshop -- tail -n 20 /var/log/cloud-init-output.log
+
+## log with bash
+# sudo lxc exec workshop -- bash
+## force passwd 
+# sudo lxc exec workshop -- bash -c "for i in {1..10}; do echo \"user\${i}:user\${i}\" | chpasswd; usermod -aG workshop_grp user\${i}; done"

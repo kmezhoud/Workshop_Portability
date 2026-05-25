@@ -11,18 +11,9 @@ Installation Guide
     newgrp lxd
 
     # Initialize LXD
-    lxd init
+    sudo lxd init
 
-## Network setting
 
-Replace network bridge `lxdbr0` and `IP` in cloud config `vm.yaml` file.
-
-    ## check Host LAN IP
-    # ip route get 1.1.1.1 | awk '{print $7}'
-    ## replace listen: tcp:<YOUR_LAN_IP>:2222
-
-    ## Check the Internal IP
-    #  sudo lxc network show lxdbr0 | grep ipv4.address
 
 ## Clone Repository
 
@@ -30,7 +21,18 @@ Replace network bridge `lxdbr0` and `IP` in cloud config `vm.yaml` file.
 
     cd Workshop_Portability
 
-## Launch the wrkshop Container
+## Network setting
+
+Open `vm.yaml` file and replace network bridge `lxdbr0` and `IP`.
+
+    ## check Host LAN IP
+    ip route get 1.1.1.1 | awk '{print $7}'
+    ## replace listen: tcp:<YOUR_LAN_IP>:2222
+
+    ## Check the Internal IP
+    sudo lxc network show lxdbr0 | grep ipv4.address
+
+## Launch the workshop Container
 
     lxc launch ubuntu:24.04 workshop --vm < vm.yaml
 
@@ -42,7 +44,10 @@ Replace network bridge `lxdbr0` and `IP` in cloud config `vm.yaml` file.
 
 ## Monitor cloud-init Progress
 
-    lxc exec workshop -- tail -f /var/log/cloud-init-output.log
+    sudo lxc exec workshop -- tail -f /var/log/cloud-init-output.log
+    
+    # list lxd connaites
+    sudo lxc list
 
 ## verify Installation
 
@@ -52,11 +57,11 @@ Replace network bridge `lxdbr0` and `IP` in cloud config `vm.yaml` file.
 
 ### Check Conda
 
-    lxc exec workshop -- /shared/tools/miniforge3/bin/conda --version
+    sudo lxc exec workshop -- /shared/tools/miniforge3/bin/conda --version
 
 ### Check Nextflow
 
-    lxc exec workshop -- nextflow -version
+    sudo lxc exec workshop -- nextflow -version
 
 ### Check Apptainer
 

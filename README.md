@@ -40,6 +40,7 @@ This platform was designed to:
 | [Conda](docs/installation.md#conda-environment-usage) | Conda Environment Usage |
 | [Nextflow](docs/installation.md#running-nextflow-pipelines) | Workflow execution |
 | [Backup & Restore](docs/installation.md#backup-and-portability) | Export and restore containers |
+| [Update the Environment](docs/installation.md#updating-the-environment) | conda update |
 
 # Why Use System Containers Instead of Traditional Workstations?
 
