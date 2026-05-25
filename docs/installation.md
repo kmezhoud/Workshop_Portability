@@ -51,6 +51,17 @@ Open `vm.yaml` file and replace network bridge `lxdbr0` and `IP`.
 
 ## verify Installation
 
+### Check Installation
+
+      chmod +x check_installed_tools.sh
+      lxc exec workshop -- bash -lc 'bash -s' < check_installed_tools.sh
+      
+      or Inside VM
+      
+      ./check_installed_tools.sh
+      
+      
+    
 ### Check Users
 
     lxc exec workshop -- getent passwd user1
@@ -106,7 +117,9 @@ Example:
 
 Example with profile:
 
-    nextflow run nf-core/rnaseq -profile conda
+    nextflow run nf-core/rnaseq -profile conda \
+      --input https://raw.githubusercontent.com/nf-core/test-datasets/rnaseq/samplesheet.csv \
+      --outdir test-results
 
 ## Using Apptainer
 
