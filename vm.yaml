@@ -18,7 +18,6 @@ config:
       - acl # Required for your setfacl operations
       - ca-certificates # CRITICAL: Forces Ubuntu to verify SSL paths properly
       - ssh
-      - openjdk-21-jdk
       - ncurses-bin
       - ncurses-term
       - libncursesw6
@@ -172,13 +171,8 @@ config:
       - /shared/tools/miniforge3/bin/conda config --set channel_priority strict
       - /shared/tools/miniforge3/bin/conda config --system --add pkgs_dirs /shared/conda-pkgs
 
-      # install java via conda
-      - source /shared/tools/miniforge3/bin/activate
-      - /shared/tools/miniforge3/bin/conda install -c conda-forge "openjdk=21" -y
-
-
       # Install bioinformatics tools
-      - /shared/tools/miniforge3/bin/conda install -y fastp
+      - /shared/tools/miniforge3/bin/conda install -y -c bioconda fastp
       - /shared/tools/miniforge3/bin/conda install -y -c bioconda iqtree
       - /shared/tools/miniforge3/bin/conda install -y -c bioconda nextflow
       - /shared/tools/miniforge3/bin/conda install -y -c bioconda mafft
@@ -186,6 +180,10 @@ config:
       # Nextflow standalone
       - curl -s https://get.nextflow.io -o /shared/tools/nextflow
       - chmod +x /shared/tools/nextflow
+      
+      # Reinstall java via conda after nextflow because nextflow install old openjdk11 version
+      - source /shared/tools/miniforge3/bin/activate
+      - /shared/tools/miniforge3/bin/conda install -c conda-forge "openjdk=21" -y
       
       # install apptainer
       - add-apt-repository -y ppa:apptainer/ppa
