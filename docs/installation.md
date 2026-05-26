@@ -46,22 +46,10 @@ Open `vm.yaml` file and replace network bridge `lxdbr0` and `IP`.
 
     sudo lxc exec workshop -- tail -f /var/log/cloud-init-output.log
     
-    # list lxd connaites
+    # list lxd containers
     sudo lxc list
 
-## verify Installation
 
-### Check Installation
-
-      chmod +x check_installed_tools.sh
-      lxc exec workshop -- bash -lc 'bash -s' < check_installed_tools.sh
-      
-      or Inside VM
-      
-      ./check_installed_tools.sh
-      
-      
-    
 ### Check Users
 
     lxc exec workshop -- getent passwd user1
@@ -80,13 +68,16 @@ Open `vm.yaml` file and replace network bridge `lxdbr0` and `IP`.
 
 ### SSH Access
 
+    #Your SSH client remembers the OLD VM host key, but the new VM generated a NEW SSH key.
+    ssh-keygen -f "/home/kirus/.ssh/known_hosts" -R "[192.168.4.64]:2222"
+
 Participants can connect using:
 
     ssh user1@SERVER_IP -p 2222
 
 Example:
 
-    ssh user3@192.168.1.10 -p 2222
+    ssh user3@192.168.4.64 -p 2222
 
 ## Shared Directory Structure
 
