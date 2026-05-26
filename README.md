@@ -41,6 +41,7 @@ This platform was designed to:
 | [Nextflow](docs/installation.md#running-nextflow-pipelines) | Workflow execution |
 | [Backup & Restore](docs/installation.md#backup-and-portability) | Export and restore containers |
 | [Update the Environment](docs/installation.md#updating-the-environment) | conda update |
+| [Check Installation](docs/check_installation.md) | check VM config and Tools |
 
 # Why Use System Containers Instead of Traditional Workstations?
 
