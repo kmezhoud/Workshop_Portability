@@ -18,6 +18,7 @@ config:
       - acl # Required for your setfacl operations
       - ca-certificates # CRITICAL: Forces Ubuntu to verify SSL paths properly
       - ssh
+      - default-jdk
       - ncurses-bin
       - ncurses-term
       - libncursesw6
@@ -150,8 +151,8 @@ config:
       - setfacl -m g:workshop_grp:rwx /shared/results
       - setfacl -d -m g:workshop_grp:rwx /shared/results
 
-      - setfacl -m g:workshop_grp:rwx /shared/conda-pkgs
-      - setfacl -d -m g:workshop_grp:rwx /shared/conda-pkgs
+      - setfacl -R -m g:workshop_grp:rwx /shared/conda-pkgs
+      - setfacl -R -d -m g:workshop_grp:rwx /shared/conda-pkgs
 
       - setfacl -m g:workshop_grp:rwx /shared/conda-envs
       - setfacl -d -m g:workshop_grp:rwx /shared/conda-envs
@@ -160,19 +161,36 @@ config:
       - wget -q https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh -O /tmp/miniforge.sh
       - bash /tmp/miniforge.sh -b -p /shared/tools/miniforge3
       - rm -f /tmp/miniforge.sh
-
-      # Conda permissions
-      - chown -R root:workshop_grp /shared/tools/miniforge3
-      - chmod -R 2775 /shared/tools/miniforge3
-
+      
+      ## Conda permissions ONLY installtion during VM built are aloowed
+      #- chown -R root:workshop_grp /shared/tools/miniforge3
+      #- chown -R root:workshop_grp /shared/conda-pkgs
+      #- chmod -R 2775 /shared/tools/miniforge3
+      #- chmod -R 2775 /shared/conda-pkgs
+      
+      # Conda permissions for useer could be install in shred conda env
+      - chown -R :workshop_grp /shared/tools/miniforge3
+      - chown -R :workshop_grp /shared/conda-pkgs
+      - chmod -R g+rwX /shared/tools/miniforge3
+      - chmod -R g+rwX /shared/conda-pkgs
+      
       # Conda config
       - /shared/tools/miniforge3/bin/conda config --add channels conda-forge
       - /shared/tools/miniforge3/bin/conda config --add channels bioconda
       - /shared/tools/miniforge3/bin/conda config --set channel_priority strict
-      - /shared/tools/miniforge3/bin/conda config --system --add pkgs_dirs /shared/conda-pkgs
 
+      # Initialize conda properly
+      - /shared/tools/miniforge3/bin/conda config --system --prepend channels conda-forge
+      - /shared/tools/miniforge3/bin/conda config --system --append channels bioconda
+      
+      - /shared/tools/miniforge3/bin/conda config --system --add pkgs_dirs /shared/conda-pkgs
+      - /shared/tools/miniforge3/bin/conda config --system --add envs_dirs /shared/conda-env
+
+      # Conda update. It is important to install compatible bioconda pkgs.
+      - /shared/tools/miniforge3/bin/conda update --all
+      
       # Install bioinformatics tools
-      - /shared/tools/miniforge3/bin/conda install -y -c bioconda fastp
+      - /shared/tools/miniforge3/bin/conda install -n base -c conda-forge -c bioconda -y fastp
       - /shared/tools/miniforge3/bin/conda install -y -c bioconda iqtree
       - /shared/tools/miniforge3/bin/conda install -y -c bioconda nextflow
       - /shared/tools/miniforge3/bin/conda install -y -c bioconda mafft
@@ -181,9 +199,10 @@ config:
       - curl -s https://get.nextflow.io -o /shared/tools/nextflow
       - chmod +x /shared/tools/nextflow
       
-      # Reinstall java via conda after nextflow because nextflow install old openjdk11 version
-      - source /shared/tools/miniforge3/bin/activate
-      - /shared/tools/miniforge3/bin/conda install -c conda-forge "openjdk=21" -y
+      # # Reinstall java via conda after nextflow because nextflow install old openjdk11 version
+      # this issue is resolved with conda update --all
+      # - source /shared/tools/miniforge3/bin/activate
+      # - /shared/tools/miniforge3/bin/conda install -c conda-forge "openjdk=21" -y
       
       # install apptainer
       - add-apt-repository -y ppa:apptainer/ppa
