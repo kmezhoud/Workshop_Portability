@@ -38,10 +38,12 @@ check "fastp" "fastp --version"
 check "iqtree" "iqtree --version"
 check "nextflow" "nextflow -version"
 check "apptainer" "apptainer --version"
+check "mafft" "mafft --version"
 
 # conda-installed fallback checks
 check "fastp (conda path)" "/shared/tools/miniforge3/bin/fastp --version"
 check "iqtree (conda path)" "/shared/tools/miniforge3/bin/iqtree --version"
+check "mafft (conda path)" "/shared/tools/miniforge3/bin/mafft --version"
 
 # ---------- PATH ----------
 echo "=== PATH CHECK ==="
@@ -77,7 +79,7 @@ echo ""
 
 # ---------- CONDA LIST ----------
 echo "=== CONDA PACKAGES (bio subset) ==="
-/shared/tools/miniforge3/bin/conda list 2>/dev/null | egrep "fastp|iqtree|nextflow|apptainer|samtools|bwa" || echo "conda not accessible"
+/shared/tools/miniforge3/bin/conda list 2>/dev/null | egrep "fastp|iqtree|mafft|nextflow|apptainer|samtools|bwa" || echo "conda not accessible"
 
 echo ""
 
