@@ -8,10 +8,47 @@
 ## Monitor VM during build
 
     lxc exec workshop -- tail -f /var/log/cloud-init-output.log
-    
+
+```
+Cloud-init v. 25.3-0ubuntu1~24.04.1 running 'modules:config' at Tue, 26 May 2026 11:08:52 +0000. Up 35.49 seconds.
+Cloud-init v. 25.3-0ubuntu1~24.04.1 running 'modules:final' at Tue, 26 May 2026 11:08:57 +0000. Up 40.83 seconds.
+Get:1 http://security.ubuntu.com/ubuntu noble-security InRelease [126 kB]
+Hit:2 http://archive.ubuntu.com/ubuntu noble InRelease
+Get:3 http://archive.ubuntu.com/ubuntu noble-updates InRelease [126 kB]
+Get:4 http://archive.ubuntu.com/ubuntu noble-backports InRelease [126 kB]
+Get:5 http://archive.ubuntu.com/ubuntu noble/universe amd64 Packages [15.0 MB]
+Get:6 http://security.ubuntu.com/ubuntu noble-security/main amd64 Packages [1703 kB]
+Get:7 http://security.ubuntu.com/ubuntu noble-security/main Translation-en [267 kB]
+Get:8 http://security.ubuntu.com/ubuntu noble-security/main amd64 Components [42.4 kB]
+Get:9 http://security.ubuntu.com/ubuntu noble-security/universe amd64 Packages [1191 kB]
+Get:10 http://security.ubuntu.com/ubuntu noble-security/universe Translation-en [230 kB]
+Get:11 http://security.ubuntu.com/ubuntu noble-security/universe amd64 Components [74.2 kB]
+Get:12 http://security.ubuntu.com/ubuntu noble-security/universe amd64 c-n-f Metadata [23.1 kB]
+Get:13 http://security.ubuntu.com/ubuntu noble-security/restricted amd64 Packages [3006 kB]
+Get:14 http://archive.ubuntu.com/ubuntu noble/universe Translation-en [5982 kB]
+Get:15 http://security.ubuntu.com/ubuntu noble-security/restricted Translation-en [698 kB]
+Get:16 http://security.ubuntu.com/ubuntu noble-security/multiverse amd64 Packages [39.3 kB]
+Get:17 http://security.ubuntu.com/ubuntu noble-security/multiverse Translation-en [8784 B]
+Get:18 http://security.ubuntu.com/ubuntu noble-security/multiverse amd64 Components [208 B]
+Get:19 http://security.ubuntu.com/ubuntu noble-security/multiverse amd64 c-n-f Metadata [396 B]
+Get:20 http://archive.ubuntu.com/ubuntu noble/universe amd64 Components [3871 kB]
+Get:21 http://archive.ubuntu.com/ubuntu noble/universe amd64 c-n-f Metadata [301 kB]
+Get:22 http://archive.ubuntu.com/ubuntu noble/multiverse amd64 Packages [269 kB]
+Get:23 http://archive.ubuntu.com/ubuntu noble/multiverse Translation-en [118 kB]
+Get:24 http://archive.ubuntu.com/ubuntu noble/multiverse amd64 Components [35.0 kB]
+Get:25 http://archive.ubuntu.com/ubuntu noble/multiverse amd64 c-n-f Metadata [8328 B]
+Get:26 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 Packages [2007 kB]
+Get:27 http://archive.ubuntu.com/ubuntu noble-updates/main Translation-en [355 kB]
+Get:28 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 Components [177 kB]
+.....
+....
+
+5 minutes
+```
+
 ## Chech VM config and Installed bioinformtics Tools
 
-    lxexec workshop -- bash -lc 'bash -s' < check_installed_tools.sh
+    lxc workshop -- bash -lc 'bash -s' < check_installed_tools.sh
 
 Note that `fastp`  is missing!
 
