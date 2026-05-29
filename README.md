@@ -43,6 +43,37 @@ This platform was designed to:
 | [Update the Environment](docs/installation.md#updating-the-environment) | conda update |
 | [Check Installation](docs/check_installation.md) | check VM config and Tools |
 
+# Default Bioinformatics Tools Installed
+
+The following bioinformatics tools are pre-installed or supported in the workshop VM environment.
+
+---
+
+# Core Bioinformatics Tools
+
+| Tool | Description | Installation Method | Source |
+|---|---|---|---|
+| fastp | FASTQ quality control and preprocessing | Conda (base) | Bioconda |
+| iqtree | Phylogenetic tree inference | Conda (base) | Bioconda |
+| mafft | Multiple sequence alignment | Conda (base) | Bioconda |
+| chewBBACA | cgMLST / wgMLST bacterial allele calling suite | Conda (base) | Bioconda |
+| Bactopia | Bacterial genome analysis pipeline | Conda + Nextflow | Bioconda |
+| Bacass *(optional)* | Assembly assessment workflow | Nextflow pipeline | nf-core |
+
+---
+
+# Workflow & Runtime Components
+
+| Component | Purpose | Installation Method |
+|---|---|---|
+| Nextflow | Workflow orchestration engine | Official binary |
+| OpenJDK 21 | Java runtime required by Nextflow | Ubuntu package |
+| Apptainer | Container runtime for nf-core pipelines | Ubuntu package |
+| Miniforge3 | Shared Conda package manager | Official installer |
+
+---
+
+
 # Why Use System Containers Instead of Traditional Workstations?
 
 Traditional workshop deployment usually requires:
