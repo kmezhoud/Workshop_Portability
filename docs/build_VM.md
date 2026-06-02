@@ -154,3 +154,16 @@ apptainer version 1.5.0
 ====================================
   AUTO TEST COMPLETE
 ```
+
+## Bioinformatics installed program paths
+
+| Component | Location                          |
+| --------- | --------------------------------- |
+| fastp     | `/shared/tools/miniforge3` (base) |
+| iqtree    | `/shared/tools/miniforge3` (base) |
+| mafft     | `/shared/tools/miniforge3` (base) |
+| Nextflow  | `/shared/tools/nextflow`          |
+| Apptainer | system package                    |
+| chewBBACA | `/shared/conda-envs/chewie`       |
+| Bactopia  | `/shared/conda-envs/bactopia`     |
+
