@@ -39,11 +39,62 @@ check "iqtree" "iqtree --version"
 check "nextflow" "nextflow -version"
 check "apptainer" "apptainer --version"
 check "mafft" "mafft --version"
+check "chewie" "/shared/conda-envs/chewie/bin/chewie --version"
+echo "chewie is available after activation: "
+echo "conda activate /shared/conda-envs/chewie"
 
 # conda-installed fallback checks
 check "fastp (conda path)" "/shared/tools/miniforge3/bin/fastp --version"
 check "iqtree (conda path)" "/shared/tools/miniforge3/bin/iqtree --version"
 check "mafft (conda path)" "/shared/tools/miniforge3/bin/mafft --version"
+check "chewie (conda path)" "/shared/conda-envs/chewie/bin/chewBBACA.py --version"
+
+
+#------------CHEWBBACA TEST ---------
+echo ""
+echo "=== CHEWBBACA ENV ACTIVATION TEST ==="
+
+source /shared/tools/miniforge3/etc/profile.d/conda.sh
+
+if conda activate /shared/conda-envs/chewie >/dev/null 2>&1; then
+    echo "[OK] chewBBACA environment activation works"
+
+    if command -v chewBBACA.py >/dev/null 2>&1; then
+        echo "[OK] chewBBACA.py available after activation"
+        echo "conda activate /shared/conda-envs/chewie"
+        chewBBACA.py --version 2>/dev/null || true
+    else
+        echo "[FAIL] chewBBACA.py missing after activation"
+    fi
+
+    conda deactivate
+else
+    echo "[FAIL] Could not activate chewBBACA environment"
+fi
+
+echo ""
+echo "=== CHEWBBACA + BLAST TEST ==="
+
+CHEWIE_BIN="/shared/conda-envs/chewie/bin"
+
+if [ -x "$CHEWIE_BIN/chewBBACA.py" ]; then
+    echo "[OK] chewBBACA found"
+
+    if [ -x "$CHEWIE_BIN/blastn" ]; then
+        echo "[OK] blastn found inside chewie env"
+    else
+        echo "[FAIL] blastn missing in chewBBACA env"
+    fi
+
+    if "$CHEWIE_BIN/chewBBACA.py" --help >/dev/null 2>&1; then
+        echo "[OK] chewBBACA runs"
+    else
+        echo "[FAIL] chewBBACA broken"
+    fi
+
+else
+    echo "[FAIL] chewBBACA not installed"
+fi
 
 # ---------- PATH ----------
 echo "=== PATH CHECK ==="
@@ -80,6 +131,9 @@ echo ""
 # ---------- CONDA LIST ----------
 echo "=== CONDA PACKAGES (bio subset) ==="
 /shared/tools/miniforge3/bin/conda list 2>/dev/null | egrep "fastp|iqtree|mafft|nextflow|apptainer|samtools|bwa" || echo "conda not accessible"
+
+echo "=== CONDA PACKAGES (bio subset) ==="
+/shared/conda-envs/chewie/bin list 2>/dev/null | egrep "chewie|chewBBACA" || echo "chewie not accessible"
 
 echo ""
 

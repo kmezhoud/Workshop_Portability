@@ -328,11 +328,11 @@ Enter container:
 
     lxc exec workshop -- bash
 
-Update Conda:
+Update Conda (ONLY ADMIN):
 
     conda update -n base -c conda-forge conda
 
-Update packages:
+Update packages (ONLY ADMIN):
 
     conda install nextflow --solver=classic
 
