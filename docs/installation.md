@@ -34,13 +34,18 @@ Open `vm.yaml` file and replace network bridge `lxdbr0` and `IP`.
 
 ## Launch the workshop Container
 
-    lxc launch ubuntu:24.04 workshop --vm < vm.yaml
+    lxc launch ubuntu:24.04 workshop --vm -c limits.cpu=2 -c limits.memory=4GiB < vm.yaml
 
     # restart container
     lxc restart workshop
 
     # open shell inside container
     lxc exec workshop -- bash
+    
+    # set LXC VM memory
+    lxc stop workshop
+    lxc config set workshop limits.memory 2GiB
+    lxc start workshop
 
 ## Monitor cloud-init Progress
 
