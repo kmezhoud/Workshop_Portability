@@ -96,6 +96,27 @@ else
     echo "[FAIL] chewBBACA not installed"
 fi
 
+
+echo ""
+echo "=== BACTOPIA STUB TEST ==="
+
+if command -v nextflow >/dev/null 2>&1; then
+    echo "[INFO] Running Bactopia stub test (light check)..."
+
+    nextflow run bactopia/bactopia \
+        -profile test,standard \
+        -stub-run --max_cpus 1 --max_memory '1 GB' \
+        >/tmp/bactopia_stub.log 2>&1
+
+    if [ $? -eq 0 ]; then
+        echo "[OK] Bactopia stub test passed"
+    else
+        echo "[WARNING] Bactopia stub test failed (check /tmp/bactopia_stub.log)"
+    fi
+else
+    echo "[SKIP] Nextflow not available"
+fi
+    
 # ---------- PATH ----------
 echo "=== PATH CHECK ==="
 echo "$PATH"
@@ -130,10 +151,10 @@ echo ""
 
 # ---------- CONDA LIST ----------
 echo "=== CONDA PACKAGES (bio subset) ==="
-/shared/tools/miniforge3/bin/conda list 2>/dev/null | egrep "fastp|iqtree|mafft|nextflow|apptainer|samtools|bwa" || echo "conda not accessible"
+ls /shared/tools/miniforge3/bin/conda | egrep "fastp|iqtree|mafft|nextflow|apptainer|samtools|bwa" || echo "conda not accessible"
 
 echo "=== CONDA PACKAGES (bio subset) ==="
-/shared/conda-envs/chewie/bin list 2>/dev/null | egrep "chewie|chewBBACA" || echo "chewie not accessible"
+ls /shared/conda-envs/chewie/bin | egrep "chewie|chewBBACA" || echo "chewie not accessible"
 
 echo ""
 

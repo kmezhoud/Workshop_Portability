@@ -275,6 +275,29 @@ config:
         export LD_LIBRARY_PATH=/shared/conda-envs/chewie/lib/ncbi-blast+:$LD_LIBRARY_PATH
         EOF
       - chmod +x /etc/profile.d/chewie.sh
+
+      # # Install BACTOPIA shared environment
+      # - |
+      #   /shared/tools/miniforge3/bin/conda create -y \
+      #     --prefix /shared/conda-envs/bactopia \
+      #     -c conda-forge \
+      #     -c bioconda \
+      #     --strict-channel-priority \
+      #     bactopia
+      # 
+      # # permissions to bactopia
+      # - chown -R root:workshop_grp /shared/conda-envs/bactopia
+      #   # Remove setgid from everything in the environment
+      # - find /shared/conda-envs/bactopia -exec chmod g-s {} \;
+      # 
+      # - |
+      #   cat << 'EOF' > /etc/profile.d/bactopia.sh
+      #   alias activate_bactopia='source /shared/tools/miniforge3/bin/activate /shared/conda-envs/bactopia'
+      #   export PATH=/shared/conda-envs/bactopia/bin:$PATH
+      #   export LD_LIBRARY_PATH=/shared/conda-envs/bactopia/lib:$LD_LIBRARY_PATH
+      #   export LD_LIBRARY_PATH=/shared/conda-envs/bactopia/lib/ncbi-blast+:$LD_LIBRARY_PATH
+      #   EOF
+      # - chmod +x /etc/profile.d/bactopia.sh
       
       # Nextflow standalone
       - curl -s https://get.nextflow.io -o /shared/tools/nextflow
