@@ -102,18 +102,62 @@ config:
         permissions: '0755'
         content: |
           #!/bin/bash
-
-          export PATH=/usr/local/bin:/shared/tools:$PATH
-
-          if [ -d /shared/tools/miniforge3/bin ]; then
-              export PATH=/shared/tools/miniforge3/bin:$PATH
-          fi
-
+          # -----------------------------
+          # SYSTEM PATH (priority order)
+          # -----------------------------
+          export PATH=/shared/tools/miniforge3/bin:/usr/local/bin:/shared/tools:$PATH
+          # -----------------------------
+          # FORCE SINGLE CONDA INSTALL
+          # -----------------------------
           if [ -f /shared/tools/miniforge3/etc/profile.d/conda.sh ]; then
               source /shared/tools/miniforge3/etc/profile.d/conda.sh
           fi
+          export CONDA_EXE=/shared/tools/miniforge3/bin/conda
+          export CONDA_PREFIX=/shared/tools/miniforge3
+          # -----------------------------
+          # SHARED CONDA STORAGE (CRITICAL)
+          # -----------------------------
+          export CONDA_ENVS_PATH=/shared/conda-envs
+          export CONDA_PKGS_DIRS=/shared/conda-pkgs
+    
+          # =========================
+          # CONDA STABILITY PATCH
+          # =========================
+          export CONDA_SOLVER=classic
+          export CONDA_EXE_SOLVER=classic
+          export CONDA_NO_PLUGINS=true
+          
+          # disable libmamba completely (important)
+          conda config --system --set solver classic
+          
+          # LIMIT CONDA MEMORY USAGE
+          export CONDA_REMOTE_CONNECT_TIMEOUT=60
+          export CONDA_REMOTE_READ_TIMEOUT=60
+          export CONDA_MAX_PARALLEL=1
+
+          # -----------------------------
+          # NEXTFLOW INTEGRATION
+          # -----------------------------
+          export NXF_CONDA_ENABLED=true
+          export NXF_CONDA_CACHEDIR=/shared/conda-envs
+    
+          export NXF_SINGULARITY_ENABLED=true
+          export NXF_SINGULARITY_CACHEDIR=/shared/singularity_cache
+    
+          # Increase stability for large pipelines (Bactopia / nf-core)
+          export NXF_CONDA_CREATE_TIMEOUT=600
+          export NXF_OPTS="-Xms1g -Xmx2g"
 
     runcmd:
+      # # =========================
+      # # CREATE SWAP (CRITICAL FOR CONDA + NEXTFLOW)
+      # # =========================
+      # - fallocate -l 2G /swapfile
+      # - chmod 600 /swapfile
+      # - mkswap /swapfile
+      # - swapon /swapfile
+      # - echo '/swapfile none swap sw 0 0' >> /etc/fstab
+  
       # SSH configuration
       - |
         echo "PasswordAuthentication yes" > /etc/ssh/sshd_config.d/60-cloudimg-settings.conf
@@ -147,7 +191,6 @@ config:
       - chmod 2775 /shared/results
       - chmod 2775 /shared/conda-pkgs
       - chmod 2775 /shared/conda-envs
-      - chmod 2775 /shared/conda-envs/chewie
 
       # ACLs
       - setfacl -m g:workshop_grp:rwx /shared/results
@@ -158,20 +201,14 @@ config:
 
       - setfacl -m g:workshop_grp:rwx /shared/conda-envs
       - setfacl -d -m g:workshop_grp:rwx /shared/conda-envs
-      - setfacl -d -m g:workshop_grp:rwx /shared/conda-envs/chewie
 
       # Install Miniforge
       - wget -q https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh -O /tmp/miniforge.sh
       - bash /tmp/miniforge.sh -b -p /shared/tools/miniforge3
       - rm -f /tmp/miniforge.sh
       
-      ## Conda permissions ONLY installtion during VM built are aloowed
-      #- chown -R root:workshop_grp /shared/tools/miniforge3
-      #- chown -R root:workshop_grp /shared/conda-pkgs
-      #- chmod -R 2775 /shared/tools/miniforge3
-      #- chmod -R 2775 /shared/conda-pkgs
       
-      # Conda permissions for useer could be install in shred conda env
+      # Conda permissions for useer could be install in shared conda env
       - chown -R :workshop_grp /shared/tools/miniforge3
       - chown -R :workshop_grp /shared/conda-pkgs
       - chmod -R g+rwX /shared/tools/miniforge3
@@ -181,6 +218,8 @@ config:
       - /shared/tools/miniforge3/bin/conda config --add channels conda-forge
       - /shared/tools/miniforge3/bin/conda config --add channels bioconda
       - /shared/tools/miniforge3/bin/conda config --set channel_priority strict
+      - /shared/tools/miniforge3/bin/conda config --set remote_connect_timeout_secs 60
+      - /shared/tools/miniforge3/bin/conda config --set remote_read_timeout_secs 60
 
       # Initialize conda properly
       - /shared/tools/miniforge3/bin/conda config --system --prepend channels conda-forge
@@ -197,7 +236,6 @@ config:
       - /shared/tools/miniforge3/bin/conda install -y -c bioconda iqtree
       - /shared/tools/miniforge3/bin/conda install -y -c bioconda nextflow
       - /shared/tools/miniforge3/bin/conda install -y -c bioconda mafft
-      
       
       # Install chewBBACA shared environment
       - |
@@ -237,7 +275,7 @@ config:
         export LD_LIBRARY_PATH=/shared/conda-envs/chewie/lib/ncbi-blast+:$LD_LIBRARY_PATH
         EOF
       - chmod +x /etc/profile.d/chewie.sh
-
+      
       # Nextflow standalone
       - curl -s https://get.nextflow.io -o /shared/tools/nextflow
       - chmod +x /shared/tools/nextflow
